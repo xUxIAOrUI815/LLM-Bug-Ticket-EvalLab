@@ -1,0 +1,44 @@
+{
+  "schema": {
+    "ticket_schema_keys": [
+      "title",
+      "steps",
+      "expected",
+      "actual",
+      "environment",
+      "severity",
+      "tags",
+      "confidence"
+    ],
+    "env_keys": [
+      "os",
+      "browser",
+      "app_version"
+    ]
+  },
+  "steps": {
+    "min_steps": 3
+  },
+  "severity": {
+    "valid_values": [
+      "low",
+      "medium",
+      "high",
+      "critical"
+    ],
+    "gold_mode": "exact",
+    "keyword_min_severity": {
+      "crash": "high",
+      "崩溃": "high",
+      "白屏": "high",
+      "typeerror": "high",
+      "cannot read properties": "high",
+      "data leak": "critical",
+      "数据泄露": "critical",
+      "别人的数据": "critical"
+    }
+  },
+  "failure_policy": {
+    "count_steps_noncompliant_as_failure": true
+  }
+}

@@ -25,9 +25,14 @@ from google import genai
 BASE_DIR = Path(__file__).resolve().parent
 DATASETS_DIR = BASE_DIR / "datasets"
 PROMPTS_DIR = BASE_DIR / "prompts"
+RULES_DIR = BASE_DIR / "rules"
 RUNS_DIR = BASE_DIR / "storage" / "runs"
 
 RUNS_DIR.mkdir(parents=True, exist_ok=True)
+DEFAULT_RULES_PATH = RULES_DIR / "default_rules.json"
+
+RUNS_DIR.mkdir(parents=True, exist_ok=True)
+RULES_DIR.mkdir(parents=True, exist_ok=True)
 
 DEFAULT_ALLOWED_ORIGINS = ["http://localhost:5173"]
 
@@ -276,10 +281,15 @@ def parse_ticket_json(raw_text: str) -> Tuple[Optional[Dict[str, Any]], Optional
     return data, None
 
 
-def validate_ticket_schema(ticket: Dict[str, Any]) -> List[str]:
+def validate_ticket_schema(ticket: Dict[str, Any], rules: Dict[str, Any]) -> List[str]:
     errors: List[str] = []
 
-    for k in TICKET_SCHEMA_KEYS:
+    schema = rules.get("schema", {})
+    required_keys = schema.get("required", [])
+    env_required = schema.get("environment_required_keys", [])
+    allowed_sev = set([s.lower() for s in schema.get("severity_allowed", ["low","medium","high","critical"])])
+
+    for k in required_keys:
         if k not in ticket:
             errors.append(f"missing:{k}")
 
@@ -296,46 +306,78 @@ def validate_ticket_schema(ticket: Dict[str, Any]) -> List[str]:
         if not isinstance(env, dict):
             errors.append("type:environment_not_object")
         else:
-            for ek in ENV_KEYS:
+            for ek in env_required:
                 if ek not in env:
                     errors.append(f"missing:environment.{ek}")
 
     if "severity" in ticket:
         sev = str(ticket["severity"]).lower()
-        if sev not in ("low", "medium", "high", "critical"):
+        if sev not in allowed_sev:
             errors.append("value:severity_invalid")
 
     return errors
 
 
-def steps_compliance(ticket: Dict[str, Any]) -> bool:
+
+def steps_compliance(ticket: Dict[str, Any], rules: Dict[str, Any]) -> bool:
+    steps_rule = rules.get("steps", {})
+    min_steps = int(steps_rule.get("min_steps", 3))
+    require_non_empty = bool(steps_rule.get("require_non_empty", True))
+
     steps = ticket.get("steps")
     if not isinstance(steps, list):
         return False
-    steps = [s for s in steps if isinstance(s, str) and s.strip()]
-    return len(steps) >= 3
+
+    if require_non_empty:
+        steps = [s for s in steps if isinstance(s, str) and s.strip()]
+    else:
+        steps = [s for s in steps if isinstance(s, str)]
+
+    return len(steps) >= min_steps
 
 
-def severity_rule_score(input_text_hint: str, ticket: Dict[str, Any], gold: Dict[str, Any]) -> float:
-    """
-    Heuristic:
-    - If gold severity exists: 1.0 if match else 0.0
-    - Else: rules from input hint keywords
-    """
-    sev = str(ticket.get("severity", "")).lower()
-    gold_sev = str((gold or {}).get("severity", "")).lower().strip()
 
-    if gold_sev in ("low", "medium", "high", "critical"):
+def severity_rule_score(input_text_hint: str, ticket: Dict[str, Any], gold: Dict[str, Any], rules: Dict[str, Any]) -> float:
+    sev_conf = rules.get("severity", {})
+    mode = sev_conf.get("mode", "exact")  # exact | gold_min
+    order = [s.lower() for s in sev_conf.get("order", ["low","medium","high","critical"])]
+    kw_map = {k.lower(): v.lower() for k, v in (sev_conf.get("keyword_min_severity", {}) or {}).items()}
+
+    sev = str(ticket.get("severity", "")).lower().strip()
+    if sev not in order:
+        return 0.0
+
+    gold = gold or {}
+    gold_sev = str(gold.get("severity", "")).lower().strip()
+    gold_min = str(gold.get("severity_min", "")).lower().strip()
+
+    # 1) gold-based
+    if mode == "exact" and gold_sev in order:
         return 1.0 if sev == gold_sev else 0.0
 
+    if mode == "gold_min" and gold_min in order:
+        return 1.0 if severity_ge(sev, gold_min, order) else 0.0
+
+    # 2) keyword heuristics
     text = (input_text_hint or "").lower()
-    if any(x in text for x in ["crash", "崩溃", "白屏", "typeerror", "cannot read properties"]):
-        return 1.0 if sev in ("high", "critical") else 0.0
-    if any(x in text for x in ["data leak", "数据泄露", "别人的数据"]):
-        return 1.0 if sev == "critical" else 0.0
+    matched_min: Optional[str] = None
+    for kw, min_sev in kw_map.items():
+        if kw in text:
+            matched_min = min_sev
+            # choose the strictest (highest) min severity if multiple match
+            if matched_min in order:
+                # TODO:
+                # keep the max requirement
+                # compare by index
+                # (higher severity => larger index)
+                pass
+
+    if matched_min and matched_min in order:
+        return 1.0 if severity_ge(sev, matched_min, order) else 0.0
 
     # unknown -> neutral
     return 0.5
+
 
 
 def compute_metrics(records: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -371,6 +413,20 @@ def classify_failure(parse_error: Optional[str], schema_errors: List[str], steps
     if not steps_ok:
         return "steps_noncompliant"
     return None
+
+def load_default_rules() -> Dict[str, Any]:
+    if not DEFAULT_RULES_PATH.exists():
+        raise RuntimeError(f"Missing rules file: {DEFAULT_RULES_PATH}")
+    return json.loads(DEFAULT_RULES_PATH.read_text(encoding="utf-8"))
+
+def severity_ge(sev_a: str, sev_b: str, order: List[str]) -> bool:
+    # returns True if sev_a >= sev_b
+    try:
+        ia = order.index(sev_a)
+        ib = order.index(sev_b)
+        return ia >= ib
+    except ValueError:
+        return False
 
 
 # =========================
@@ -411,11 +467,15 @@ def create_run(req: RunRequest):
     run_dir = RUNS_DIR / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
 
+    rules = load_default_rules()
+    (run_dir / "rules.json").write_text(json.dumps(rules, ensure_ascii=False, indent=2), encoding="utf-8")
+
     config = req.model_dump()
     (run_dir / "config.json").write_text(json.dumps(config, ensure_ascii=False, indent=2), encoding="utf-8")
 
     prompt = load_prompt(req.prompt_name)
     items = load_dataset_items(req.dataset_version)
+
 
     # filter by input_types if provided
     if req.input_types:
@@ -480,9 +540,9 @@ def create_run(req: RunRequest):
         sev_score = 0.0
 
         if parse_err is None and parsed is not None:
-            schema_errors = validate_ticket_schema(parsed)
-            steps_ok = steps_compliance(parsed)
-            sev_score = severity_rule_score(input_hint, parsed, gold)
+            schema_errors = validate_ticket_schema(parsed, rules)
+            steps_ok = steps_compliance(parsed, rules)
+            sev_score = severity_rule_score(input_hint, parsed, gold, rules)
 
         failure_type = classify_failure(parse_err, schema_errors, steps_ok)
 
@@ -529,12 +589,40 @@ def create_run(req: RunRequest):
     (run_dir / "eval.json").write_text(json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8")
     (run_dir / "failures.json").write_text(json.dumps(failures, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    from collections import Counter
+
+    def build_eval_summary(records: List[Dict[str, Any]]) -> Dict[str, Any]:
+        failure_counts = Counter([(r.get("failure_type") or "ok") for r in records])
+        schema_errs = Counter()
+        parse_errs = Counter()
+
+        for r in records:
+            pe = r.get("parse_error")
+            if pe:
+                # coarse type: json_parse_error / inference_error / json_not_object / empty_output ...
+                parse_errs[pe.split(":")[0]] += 1
+            for se in r.get("schema_errors", []):
+                schema_errs[se] += 1
+
+        return {
+            "failure_type_counts": dict(failure_counts),
+            "top_schema_errors": schema_errs.most_common(10),
+            "top_parse_error_types": parse_errs.most_common(10)
+        }
+
+    summary = build_eval_summary(records)
+    (run_dir / "eval_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+
     return RunSummary(
         run_id=run_id,
         status="completed",
         config=config,
         metrics=metrics,
     )
+
+
+
+
 
 
 @app.get("/v1/runs/{run_id}", response_model=RunSummary)

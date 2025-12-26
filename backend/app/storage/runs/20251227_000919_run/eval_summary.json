@@ -1,0 +1,13 @@
+{
+  "failure_type_counts": {
+    "ok": 2,
+    "inference_error": 8
+  },
+  "top_schema_errors": [],
+  "top_parse_error_types": [
+    [
+      "inference_error",
+      8
+    ]
+  ]
+}

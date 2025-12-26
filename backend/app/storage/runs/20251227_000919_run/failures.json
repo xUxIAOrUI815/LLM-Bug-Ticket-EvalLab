@@ -1,0 +1,210 @@
+[
+  {
+    "id": "bug_vid_002",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C1",
+      "trigger": "input_submit",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "high",
+      "tags": [
+        "frontend",
+        "crash",
+        "form"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 10.724338945s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '10s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：输入了什么（可概括）、点击提交后出现的崩溃/白屏/卡死现象，并给出可复现 steps（>=3）。"
+  },
+  {
+    "id": "bug_vid_003",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C2",
+      "trigger": "navigate_operate",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "high",
+      "tags": [
+        "frontend",
+        "crash",
+        "navigation"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 1.47432183s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '1s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：导航到详情页的操作步骤、在详情页触发崩溃的具体操作，并给出可复现 steps（>=3）。"
+  },
+  {
+    "id": "bug_vid_004",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C3",
+      "trigger": "frequent_click_input",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "high",
+      "tags": [
+        "frontend",
+        "crash",
+        "frequent_operation"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 52.747057558s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '52s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：频繁点击/输入等嘈杂操作的具体内容、操作后出现的崩溃现象，并给出可复现 steps（>=3）。"
+  },
+  {
+    "id": "bug_vid_006",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C0",
+      "trigger": "click",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "medium",
+      "tags": [
+        "frontend",
+        "interaction",
+        "no_response"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 29.157922413s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '29s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据该录屏视频生成结构化 Bug 工单 JSON（title/steps/expected/actual/environment/severity/tags/confidence）。重点描述：点击提交按钮后完全无响应的现象。"
+  },
+  {
+    "id": "bug_vid_007",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C1",
+      "trigger": "click",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "medium",
+      "tags": [
+        "frontend",
+        "interaction",
+        "false_success"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 21.949655293s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '21s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：点击操作、弹出的成功提示内容、实际状态未变化的具体表现，并给出可复现 steps（>=3）。"
+  },
+  {
+    "id": "bug_vid_008",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C2",
+      "trigger": "operate_without_prerequisite",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "medium",
+      "tags": [
+        "frontend",
+        "interaction",
+        "hidden_prerequisite"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 14.662459977s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '14s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：需要勾选复选框的隐藏前提、未勾选时操作无响应的现象，并给出可复现 steps（>=3）。"
+  },
+  {
+    "id": "bug_vid_009",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C3",
+      "trigger": "click_blocked",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "medium",
+      "tags": [
+        "frontend",
+        "interaction",
+        "mask_block"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 9.405169336s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '9s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：透明遮罩层的位置、被遮挡的可点击区域、点击无反应的现象，并给出可复现 steps（>=3）。"
+  },
+  {
+    "id": "bug_vid_010",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C1",
+      "trigger": "operate",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "medium",
+      "tags": [
+        "frontend",
+        "interaction",
+        "api_not_sent"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 2.757291003s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '2s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：应触发 API 请求的操作、未发送请求的验证结果，并给出可复现 steps（>=3）。"
+  }
+]

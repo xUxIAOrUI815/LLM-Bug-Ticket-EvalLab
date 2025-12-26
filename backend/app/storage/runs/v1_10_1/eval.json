@@ -1,0 +1,8 @@
+{
+  "num_samples": 10,
+  "json_parse_rate": 0.2,
+  "schema_complete_rate": 0.2,
+  "steps_compliance_rate": 0.2,
+  "avg_severity_rule_score": 0.1,
+  "avg_latency_ms": 17544
+}

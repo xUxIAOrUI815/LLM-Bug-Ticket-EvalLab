@@ -1,0 +1,61 @@
+{
+"schema": {
+    "required": [
+    "title",
+    "steps",
+    "expected",
+    "actual",
+    "environment",
+    "severity",
+    "tags",
+    "confidence"
+    ],
+    "environment_required_keys": [
+    "os",
+    "browser",
+    "app_version"
+    ],
+    "severity_allowed": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+    ]
+},
+
+"steps": {
+    "min_steps": 3,
+    "require_non_empty": true
+},
+
+"severity": {
+    "mode": "exact",
+    "order": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+    ],
+    "keyword_min_severity": {
+    "crash": "high",
+    "崩溃": "high",
+    "白屏": "high",
+    "卡死": "high",
+    "typeerror": "high",
+    "cannot read properties": "high",
+    "exception": "high",
+    "data leak": "critical",
+    "数据泄露": "critical",
+    "别人的数据": "critical"
+    }
+},
+
+"failure_policy": {
+    "count_schema_errors_as_failure": true,
+    "count_steps_noncompliant_as_failure": true
+},
+
+"output_sanitizer": {
+    "strip_code_fences": true
+}
+}

@@ -1,0 +1,7 @@
+{
+  "dataset_version": "v1",
+  "prompt_name": "ticket_v1_schema",
+  "model": "gemini-3-flash-preview",
+  "max_samples": 2,
+  "input_types": null
+}

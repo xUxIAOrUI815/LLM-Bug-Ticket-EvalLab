@@ -1,0 +1,142 @@
+[
+  {
+    "id": "bug_vid_001",
+    "input_type": "video",
+    "failure_type": "parse_error",
+    "parse_error": "json_parse_error:Expecting value: line 1 column 1 (char 0)",
+    "schema_errors": [],
+    "steps_ok": false,
+    "latency_ms": 19006,
+    "input_preview": "请根据该录屏视频生成结构化 Bug 工单 JSON（title/steps/expected/actual/environment/severity/tags/confidence）。重点描述：点击哪个按钮/元素后发生了什么崩溃现象。",
+    "raw_preview": "你好！我是资深 QA 工程师。根据你提供的录屏视频，我为你生成了一份专业的 Bug 工单。\n\n---\n\n# Bug 工单：[Crash Scenario] 点击 \"Primary Action\" 按钮触发程序异常但未显示预期错误遮罩\n\n## 1. 缺陷标题\n**[场景 crash_01] 触发 Manual Crash 后，系统仅抛出控制台错误，未按预期展示错误遮罩或白屏**\n\n## 2. 复现步骤\n1. 访问测试页面 `localhost:3173` 并进入场景 `crash_01`（Category: crash）。\n2. 在 **Inputs** 输入框中输入任意文本（例如：\"hello\"）。\n3. 多次点击 **Primary Action** 按钮。\n4. 打开浏览器开发者工具（DevTools），查看 **Console** 面板。\n5. 观察页面 UI 变化与日志输出。\n\n## 3. 预期结果 vs 实际结果\n*   **预期结果**：\n    *   根据页面提示（Repro Steps），点击后应观察到“白屏（Blank screen）”或“错误遮罩（Error overlay）”。\n    *   系统应通过全局错误处理器捕获异常并反馈给用户。\n*   **实际结果**：\n    *   UI 界面保持不变，依然可以进行交互（Local Log 持续更新点击记录）。\n    *   控制台（Console）抛出未捕获的错误：`Uncaught Error: Manual crash triggered by user action`。\n    *   预期的“错误遮罩”或“白屏”未出现，错误处理机制未能正确拦截并渲染错误状态。\n\n## 4. 严重级别\n**级别：High (高)**\n\n*   **原因说明**：虽然在视频中系统没有完全“卡死”，但这是一个"
+  },
+  {
+    "id": "bug_vid_002",
+    "input_type": "video",
+    "failure_type": "parse_error",
+    "parse_error": "json_parse_error:Expecting value: line 1 column 1 (char 0)",
+    "schema_errors": [],
+    "steps_ok": false,
+    "latency_ms": 17976,
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：输入了什么（可概括）、点击提交后出现的崩溃/白屏/卡死现象，并给出可复现 steps（>=3）。",
+    "raw_preview": "没问题，作为资深 QA，我已根据你提供的视频内容（Scenario: crash_01）整理出一份标准、规范的 Bug 工单。\n\n---\n\n# Bug 工单：[crash_01] 点击“Primary Action”提交输入内容时触发 Null Reference 运行时错误\n\n## 1. 简要描述 (Title)\n在 `crash_01` 场景下，用户在输入框输入任意文字并点击“Primary Action”按钮后，系统控制台抛出 `null reference` 异步错误，导致功能逻辑中断。\n\n## 2. 复现步骤 (Reproduction Steps)\n1. 访问测试环境地址（视频中为 `http://localhost:5173`）。\n2. 进入场景：**Scenario: crash_01**，类别：**crash**。\n3. 在 **Inputs** 区域的文本框中输入任意字符（例如：`test01`）。\n4. 点击 **Controls** 区域中的 **Primary Action** 按钮。\n5. 打开浏览器开发者工具（F12），查看 **Console** 面板。\n\n## 3. 预期结果 vs 实际结果 (Expected vs Actual)\n*   **预期结果**：点击提交后，系统应正常处理输入数据（如清空输入、显示成功提示或记录有效日志），不应出现程序崩溃或控制台报错。\n*   **实际结果**：\n    *   UI 界面虽未完全消失，但控制台频繁抛出异步错误：`Uncaught (in promise) Error: Event caused null reference`。\n    *   错误指向源码文件：`BugEngine.jsx:144`。\n    *   Local Log 虽记录了点击动作，但后端/引擎层面的逻辑因空引用异常而"
+  },
+  {
+    "id": "bug_vid_003",
+    "input_type": "video",
+    "failure_type": "parse_error",
+    "parse_error": "json_parse_error:Expecting value: line 1 column 1 (char 0)",
+    "schema_errors": [],
+    "steps_ok": false,
+    "latency_ms": 19231,
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：导航到详情页的操作步骤、在详情页触发崩溃的具体操作，并给出可复现 steps（>=3）。",
+    "raw_preview": "你好，我是资深 QA 工程师。根据你提供的录屏视频，我为你生成了这份详细的 Bug 工单。\n\n---\n\n# Bug 工单：[Crash] 点击 \"Primary Action\" 按钮导致页面抛出未捕获的运行时错误\n\n### 1. 缺陷描述 (Title)\n在 `Scenario: crash_01` 页面中，点击 \"Primary Action\" 按钮会导致 JavaScript 运行时错误（Uncaught Error），控制台显示页面崩溃。\n\n### 2. 复现步骤 (Reproduction Steps)\n1. 访问测试环境：`http://localhost:5173/`。\n2. 在场景列表中选择并进入 **Scenario: crash_01** (Category: crash)。\n3. 在 \"Inputs\" 输入框中输入任意字符（例如 \"hhh\"）。\n4. 点击界面上的 **\"Primary Action\"** 按钮。\n5. 观察页面行为并打开浏览器开发者工具（F12）查看 Console 控制台。\n\n### 3. 预期结果 vs. 实际结果 (Expected vs. Actual)\n*   **预期结果**：点击 \"Primary Action\" 后，系统应正常处理请求，Log 区域记录操作，不应出现程序报错或功能中断。\n*   **实际结果**：控制台抛出红字错误：`Uncaught (in promise) Error: Details page crashed`。错误源自 `BugGains.tsx:38`。\n\n### 4. 严重级别 (Severity)\n**级别：Critical (紧急)**\n\n*   **原因分析**：该错误属于 **Runtime Crash（运行时崩溃）**。在前端应用中，未捕获的 Promise 错误可能导致整个 Rea"
+  },
+  {
+    "id": "bug_vid_004",
+    "input_type": "video",
+    "failure_type": "parse_error",
+    "parse_error": "json_parse_error:Expecting value: line 1 column 1 (char 0)",
+    "schema_errors": [],
+    "steps_ok": false,
+    "latency_ms": 25810,
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：频繁点击/输入等嘈杂操作的具体内容、操作后出现的崩溃现象，并给出可复现 steps（>=3）。",
+    "raw_preview": "你好，我是资深 QA 工程师。根据你提供的录屏视频，我已为你生成了一份标准的 Bug 工单。\n\n---\n\n# Bug 工单：[Scenario crash_04] 点击 \"Primary Action\" 按钮导致程序抛出未捕获异常 (Crash)\n\n## 1. 简要描述\n在 `crash_04` 场景下，用户执行页面交互并点击 “Primary Action” 按钮后，系统会触发一个未捕获的 JavaScript 错误：`Uncaught Error: Thought: crash triggered in user action`，导致程序逻辑中断。\n\n## 2. 复现步骤\n1. 访问测试页面：`http://localhost:5173/`。\n2. 确保当前 Scenario 为 `crash_04`，Category 为 `crash`。\n3. （可选）按照页面提示进行滚动或切换 Checkbox 状态。\n4. 在 **Inputs** 输入框内输入任意文本（例如：`typestet`）。\n5. 点击 **Controls** 区域下的 **\"Primary Action\"** 按钮。\n6. 打开浏览器开发者工具（F12）查看 Console 控制台。\n\n## 3. 预期结果与实际结果\n*   **预期结果**：点击按钮后，程序应正常处理逻辑或给出合法的操作反馈，不应出现代码层面的崩溃或未捕获异常。\n*   **实际结果**：控制台抛出红色的 `Uncaught Error: Thought: crash triggered in user action` 报错，程序发生崩溃（Crash）。\n\n## 4. 严重级别\n*   **级别**：**High (高)**\n*   **原因**：该 Bug 属于“程序崩溃”类。虽然是在特定的测试场景下触发，但在实际生产环境中，未"
+  },
+  {
+    "id": "bug_vid_005",
+    "input_type": "video",
+    "failure_type": "parse_error",
+    "parse_error": "json_parse_error:Expecting value: line 1 column 1 (char 0)",
+    "schema_errors": [],
+    "steps_ok": false,
+    "latency_ms": 17999,
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：触发崩溃的操作、控制台（DevTools）中留下的提示信息，并给出可复现 steps（>=3）。",
+    "raw_preview": "你好，我是 QA 工程师。根据你提供的录屏视频，我为你整理了这份 Bug 工单：\n\n---\n\n# Bug 工单：[Scenario crash_01] 点击 Primary Action 按钮导致页面崩溃（白屏）\n\n### 1. 缺陷标题\n**[Crash] 在 crash_01 场景下点击 “Primary Action” 按钮触发立即崩溃/白屏**\n\n### 2. 复现步骤\n1. 访问 Bug Farm 首页。\n2. 在 **Crash / Blank Screen** 栏目下，点击第一个场景：`crash_01 -- Click to trigger immediate crash`。\n3. 进入详情页后，在 **Inputs** 输入框中输入任意字符（例如 \"ab\"）。\n4. 勾选 **Prerequisite Checkbox** 复选框。\n5. 点击 **Primary Action** 按钮。\n6. 观察页面表现及控制台日志。\n\n### 3. 预期结果 vs 实际结果\n*   **预期结果**：点击按钮后，系统应执行对应逻辑（如记录日志或提交数据），页面保持正常响应，不应发生崩溃。\n*   **实际结果**：点击按钮后，页面立即变为全白（白屏），应用崩溃。控制台（DevTools）抛出错误：`BugFarm error: Browser: Thought: 'crash' triggered by user action`。\n\n### 4. 严重级别\n*   **级别**：**Critical (紧急)**\n*   **原因**：该 Bug 会导致应用完全不可用（白屏），属于阻断性故障（Blocker），用户无法通过刷新以外的方式恢复，严重影响用户体验。\n\n### 5. 标签 (Tags)\n`Type: Bug` | `Component: UI/Fronte"
+  },
+  {
+    "id": "bug_vid_006",
+    "input_type": "video",
+    "failure_type": "parse_error",
+    "parse_error": "json_parse_error:Expecting value: line 1 column 1 (char 0)",
+    "schema_errors": [],
+    "steps_ok": false,
+    "latency_ms": 18182,
+    "input_preview": "请根据该录屏视频生成结构化 Bug 工单 JSON（title/steps/expected/actual/environment/severity/tags/confidence）。重点描述：点击提交按钮后完全无响应的现象。",
+    "raw_preview": "你好！我是资深 QA 工程师。根据你提供的录屏视频，我为你整理了一份标准的 Bug 工单。\n\n---\n\n# Bug 工单：[Scenario: no_response_01] 点击 Primary-Action 按钮后 UI 计数器与项数无响应\n\n## 1. 缺陷标题\n**[功能性错误]** 在 `no_response_01` 场景下，点击 Primary-Action 按钮后，UI Area 的计数器 (Counter) 和项目数 (Items) 均无任何变化。\n\n## 2. 复现步骤\n1. 打开测试应用并进入场景：`Scenario: no_response_01`。\n2. 直接多次点击 **Primary-Action** 按钮。\n3. 在 **Inputs** 输入框中输入文本（例如：\"hhh\"）。\n4. 勾选 **Prerequisite Checkbox** 复选框。\n5. 再次多次点击 **Primary-Action** 按钮。\n6. 观察右侧 **UI Area** 的状态以及下方的 **Local Log**。\n\n## 3. 预期结果与实际结果\n*   **预期结果：** \n    *   点击 Primary-Action 后，UI Area 中的 `Counter` 应该递增，或者 `Items` 列表应该更新显示输入的内容。\n    *   系统应提供明确的视觉反馈（如 Toast 提示或状态变更）。\n*   **实际结果：** \n    *   UI Area 始终保持静止（Counter: 0 | Items: 0）。\n    *   虽然 **Local Log** 显示系统记录了点击事件（`action clicked: be_no_response_01`），但前端界面无任何响应，属于“静默失败 (Silent Failure)”。\n\n"
+  },
+  {
+    "id": "bug_vid_007",
+    "input_type": "video",
+    "failure_type": "parse_error",
+    "parse_error": "json_parse_error:Expecting value: line 1 column 1 (char 0)",
+    "schema_errors": [],
+    "steps_ok": false,
+    "latency_ms": 17379,
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：点击操作、弹出的成功提示内容、实际状态未变化的具体表现，并给出可复现 steps（>=3）。",
+    "raw_preview": "你好，我是资深 QA 工程师。根据你提供的录屏视频，我为你整理了一份标准的 Bug 工单。\n\n---\n\n# Bug 工单：提交操作后 UI 计数器与列表未同步更新（Scenario: no_response_id）\n\n## 1. 缺陷描述 (Title)\n**[Bug]** 在 `no_response_id` 场景下，点击“Primary Action”并显示“Submitted”成功提示后，UI 区域的计数器（Counter）和项目列表（Items）未发生任何更新。\n\n## 2. 复现步骤 (Reproduction Steps)\n1. 访问测试页面 `http://localhost:5173`。\n2. 在 **Inputs** 输入框中输入任意文本（例如：\"sss\"）。\n3. 勾选 **Prerequisite Checkbox** 复选框。\n4. 点击 **Primary Action** 按钮执行提交操作。\n5. 观察页面顶部弹出的 Toast 提示及右侧 **UI Area** 的数据变化。\n\n## 3. 预期结果 vs 实际结果 (Results)\n*   **预期结果：** \n    *   顶部应显示“Submitted”成功提示。\n    *   **UI Area** 中的 `Counter` 应增加（例如变为 1）。\n    *   **UI Area** 中的 `Items` 列表应包含刚刚输入的内容（例如 `[\"sss\"]`）。\n*   **实际结果：** \n    *   顶部虽然显示了“Submitted”提示。\n    *   但 `Counter` 依然保持为 `0`，`Items` 列表依然为空 `[]`，界面未响应数据变化（典型的静默失败/UI 未刷新）。\n\n## 4. 严重级别 (Severity)\n*   **级别：High ("
+  },
+  {
+    "id": "bug_vid_008",
+    "input_type": "video",
+    "failure_type": "parse_error",
+    "parse_error": "json_parse_error:Expecting value: line 1 column 1 (char 0)",
+    "schema_errors": [],
+    "steps_ok": false,
+    "latency_ms": 17125,
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：需要勾选复选框的隐藏前提、未勾选时操作无响应的现象，并给出可复现 steps（>=3）。",
+    "raw_preview": "你好，我是资深 QA 工程师。根据你提供的录屏视频，我为你整理了一份标准的 Bug 工单。\n\n---\n\n# Bug Report: [UI/UX] \"Primary Action\" 按钮在未勾选前提条件时发生静默失败（无响应）\n\n### 1. 简要描述 (Summary)\n在 `no_response_01` 场景下，当用户未勾选 \"Prerequisite Checkbox\"（前提条件复选框）直接点击 \"Primary Action\" 按钮时，系统虽然记录了点击日志，但 UI 层面没有任何反馈（Counter 不增加，无错误提示），属于典型的静默失败（Silent Failure）。\n\n### 2. 复现步骤 (Reproduction Steps)\n1. 访问测试页面：`localhost:5173` (Scenario: `no_response_01`)。\n2. 在 **Inputs** 输入框内输入任意内容（例如：\"test item\"）。\n3. 确保 **Prerequisite Checkbox** 处于**未勾选**状态。\n4. 点击 **Primary Action** 按钮。\n5. 观察 UI Area 的 Counter 计数器以及是否弹出提示。\n6. 勾选 **Prerequisite Checkbox** 后再次点击 **Primary Action**。\n\n### 3. 预期结果 (Expected Results)\n*   如果复选框是必选项，点击按钮后应弹出明确的错误提示（如：Toast 或红字提醒 \"Please check the prerequisite\"），告知用户为何操作无效。\n*   不应在没有任何 UI 反馈的情况下让操作直接失效。\n\n### 4. 实际结果 (Actual Results)\n*   **未勾选复选框时：** 尽"
+  },
+  {
+    "id": "bug_vid_009",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C3",
+      "trigger": "click_blocked",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "medium",
+      "tags": [
+        "frontend",
+        "interaction",
+        "mask_block"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 38.383559716s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '38s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：透明遮罩层的位置、被遮挡的可点击区域、点击无反应的现象，并给出可复现 steps（>=3）。"
+  },
+  {
+    "id": "bug_vid_010",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C1",
+      "trigger": "operate",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "medium",
+      "tags": [
+        "frontend",
+        "interaction",
+        "api_not_sent"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\\nPlease retry in 29.834382942s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '29s'}]}}",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：应触发 API 请求的操作、未发送请求的验证结果，并给出可复现 steps（>=3）。"
+  }
+]

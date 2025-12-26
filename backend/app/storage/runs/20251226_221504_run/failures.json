@@ -1,0 +1,53 @@
+[
+  {
+    "id": "bug_vid_001",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C0",
+      "trigger": "click",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "high",
+      "tags": [
+        "frontend",
+        "crash"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:Video not found: D:\\日常学习\\BugHunter\\backend\\app\\datasets\\v1\\videos\\bug_vid_001.mp4",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据该录屏视频生成结构化 Bug 工单 JSON（title/steps/expected/actual/environment/severity/tags/confidence）。重点描述：点击哪个按钮/元素后发生了什么崩溃现象。"
+  },
+  {
+    "id": "bug_vid_002",
+    "input_type": "video",
+    "meta": {
+      "source": "bug-farm",
+      "difficulty": "C1",
+      "trigger": "input_submit",
+      "has_console_hint": false
+    },
+    "gold": {
+      "severity": "high",
+      "tags": [
+        "frontend",
+        "crash",
+        "form"
+      ]
+    },
+    "raw_text": "",
+    "latency_ms": null,
+    "parse_error": "inference_error:Video not found: D:\\日常学习\\BugHunter\\backend\\app\\datasets\\v1\\videos\\bug_vid_002.mp4",
+    "schema_errors": [],
+    "steps_ok": false,
+    "severity_score": 0.0,
+    "failure_type": "inference_error",
+    "input_preview": "请根据录屏生成结构化 Bug 工单 JSON。重点抽取：输入了什么（可概括）、点击提交后出现的崩溃/白屏/卡死现象，并给出可复现 steps（>=3）。"
+  }
+]
