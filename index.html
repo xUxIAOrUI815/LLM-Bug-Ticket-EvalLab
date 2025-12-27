@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>报错演示页</title>
+    <style>
+      button {
+        padding: 10px 20px;
+        font-size: 18px;
+        color: #fff;
+        background: #e74c3c;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>点击按钮</h2>
+    <button onclick="boom()">这是一个按钮</button>
+
+    <script>
+      function boom() {
+        // 故意访问 undefined 的属性，100% 报错
+        const obj = undefined;
+        obj.someMethod(); // ← 经典 TypeError: Cannot read properties of undefined
+      }
+    </script>
+  </body>
+</html>

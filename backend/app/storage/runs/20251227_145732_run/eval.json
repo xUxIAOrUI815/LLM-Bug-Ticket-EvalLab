@@ -1,0 +1,19 @@
+{
+  "overall": {
+    "num_samples": 2,
+    "num_inference_error": 0,
+    "json_parse_rate": 1.0,
+    "schema_complete_rate": 1.0,
+    "steps_compliance_rate": 1.0,
+    "avg_severity_rule_score": 1.0,
+    "avg_latency_ms": 18671
+  },
+  "quality_only": {
+    "num_quality_samples": 2,
+    "json_parse_rate": 1.0,
+    "schema_complete_rate": 1.0,
+    "steps_compliance_rate": 1.0,
+    "avg_severity_rule_score": 1.0,
+    "avg_latency_ms": 18671
+  }
+}

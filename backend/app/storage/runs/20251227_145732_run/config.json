@@ -1,0 +1,9 @@
+{
+  "run_id": "20251227_145732_run",
+  "dataset_version": "v1",
+  "prompt_name": "ticket_v2_preference_guardrail",
+  "model": "gemini-3-flash-preview",
+  "max_samples": 3,
+  "input_types": null,
+  "resume": true
+}
