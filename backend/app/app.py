@@ -629,32 +629,45 @@ def create_run(req: RunRequest):
 
     def build_eval_summary(records: List[Dict[str, Any]]) -> Dict[str, Any]:
         failure_counts = Counter([(r.get("failure_type") or "ok") for r in records])
+
         schema_errs = Counter()
         parse_errs = Counter()
+        inference_errs = Counter()
+        inference_retryable = Counter()
 
         for r in records:
-            pe = r.get("parse_error")
-            if pe:
-                # coarse type: json_parse_error / inference_error / json_not_object / empty_output ...
-                parse_errs[pe.split(":")[0]] += 1
+            # schema errors
             for se in r.get("schema_errors", []):
                 schema_errs[se] += 1
 
+            # parse_error coarse type (仍然保留，向后兼容)
+            pe = r.get("parse_error")
+            if pe:
+                parse_errs[pe.split(":")[0]] += 1
+
+            # NEW: structured inference error
+            if r.get("failure_type") == "inference_error":
+                ie = r.get("inference_error", {})
+                ie_type = ie.get("type", "unknown")
+                inference_errs[ie_type] += 1
+
+                if ie.get("retryable") is True:
+                    inference_retryable["retryable"] += 1
+                else:
+                    inference_retryable["non_retryable"] += 1
+
         return {
             "failure_type_counts": dict(failure_counts),
+
             "top_schema_errors": schema_errs.most_common(10),
-            "top_parse_error_types": parse_errs.most_common(10)
+
+            "top_parse_error_types": parse_errs.most_common(10),
+
+            # NEW: inference-level diagnostics
+            "inference_error_breakdown": inference_errs.most_common(10),
+            "inference_retryability": dict(inference_retryable)
         }
 
-    summary = build_eval_summary(records)
-    (run_dir / "eval_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-
-    return RunSummary(
-        run_id=run_id,
-        status="completed",
-        config=config,
-        metrics=metrics,
-    )
 
 
 
