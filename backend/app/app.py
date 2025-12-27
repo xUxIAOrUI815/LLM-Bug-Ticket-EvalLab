@@ -69,12 +69,13 @@ ENV_KEYS = ["os", "browser", "app_version"]
 
 
 class RunRequest(BaseModel):
+    run_id: Optional[str] = None
     dataset_version: str = Field(..., examples=["v1"])
     prompt_name: str = Field(..., examples=["ticket_v1_schema"])
     model: str = Field(..., examples=["gemini-3-flash-preview"])
     max_samples: int = Field(50, ge=1, le=500)
     input_types: Optional[List[InputType]] = Field(default=None, description="e.g. ['text','video']; None=all")
-
+    resume: bool = True
 
 class RunSummary(BaseModel):
     run_id: str
@@ -529,9 +530,27 @@ def create_run(req: RunRequest):
     if req.prompt_name not in list_prompt_names():
         raise HTTPException(status_code=404, detail=f"Unknown prompt_name: {req.prompt_name}")
 
-    run_id = create_run_id()
+    run_id = req.run_id or create_run_id()
     run_dir = RUNS_DIR / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
+
+    completed_ids: set[str] = set()
+
+    resume = bool(getattr(req, "resume", True))
+
+    parsed_outputs_path = run_dir / "parsed_outputs.jsonl"
+
+    if resume and parsed_outputs_path.exists():
+        with parsed_outputs_path.open("r", encoding="utf-8") as f:
+            for line in f:
+                try:
+                    obj = json.loads(line)
+                    sid = obj.get("id")
+                    # 只要 parsed 成功 or inference_error 已记录，都算“已处理”
+                    if sid:
+                        completed_ids.add(sid)
+                except Exception:
+                    continue
 
     rules = load_default_rules()
     (run_dir / "rules.json").write_text(json.dumps(rules, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -559,6 +578,9 @@ def create_run(req: RunRequest):
         input_type: InputType = it.get("input_type")
         gold = it.get("gold") or {}
         meta = it.get("meta") or {}
+
+        if resume and sample_id in completed_ids:
+            continue
 
         # Build input_data
         if input_type == "text":
