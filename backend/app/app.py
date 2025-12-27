@@ -361,16 +361,13 @@ def severity_rule_score(input_text_hint: str, ticket: Dict[str, Any], gold: Dict
     # 2) keyword heuristics
     text = (input_text_hint or "").lower()
     matched_min: Optional[str] = None
+    matched_idx = -1
     for kw, min_sev in kw_map.items():
-        if kw in text:
-            matched_min = min_sev
-            # choose the strictest (highest) min severity if multiple match
-            if matched_min in order:
-                # TODO:
-                # keep the max requirement
-                # compare by index
-                # (higher severity => larger index)
-                pass
+        if kw in text and min_sev in order:
+            idx = order.index(min_sev)
+            if idx > matched_idx:
+                matched_idx = idx
+                matched_min = min_sev
 
     if matched_min and matched_min in order:
         return 1.0 if severity_ge(sev, matched_min, order) else 0.0
@@ -386,9 +383,9 @@ def compute_metrics(records: List[Dict[str, Any]]) -> Dict[str, Any]:
         return {}
 
     # overall
-    parse_ok = sum(1 for r in records if r.get("parse_error") is None)
-    schema_ok = sum(1 for r in records if r.get("parse_error") is None and len(r.get("schema_errors", [])) == 0)
-    steps_ok = sum(1 for r in records if r.get("parse_error") is None and r.get("steps_ok") is True)
+    parse_ok = sum(1 for r in records if r.get("failure_type") != "inference_error" and r.get("parse_error") is None)
+    schema_ok = sum(1 for r in records if r.get("failure_type") != "inference_error" and r.get("parse_error") is None and len(r.get("schema_errors", [])) == 0)
+    steps_ok = sum(1 for r in records if r.get("failure_type") != "inference_error" and r.get("parse_error") is None and r.get("steps_ok") is True)
 
     latencies = [r["latency_ms"] for r in records if isinstance(r.get("latency_ms"), int)]
     avg_latency = int(sum(latencies) / len(latencies)) if latencies else None
@@ -586,24 +583,33 @@ def create_run(req: RunRequest):
             latency_ms = call.latency_ms
         except Exception as e:
             # Treat as inference failure
+            err_text = f"inference_error:{str(e)}"
             rec = {
                 "id": sample_id,
                 "input_type": input_type,
                 "meta": meta,
                 "gold": gold,
                 "raw_text": "",
+                "parsed": None,
                 "latency_ms": None,
-                "parse_error": f"inference_error:{str(e)}",
+
+                # NEW: split fields
+                "inference_error_text": err_text,
+                "parse_error": None,
+
                 "schema_errors": [],
                 "steps_ok": False,
                 "severity_score": 0.0,
                 "failure_type": "inference_error",
+                "inference_error": classify_inference_error(err_text),
             }
             records.append(rec)
-            failures.append({**rec, "input_preview": it.get("input", "")[:300]})
+            failures.append({**rec, "input_preview": (it.get("input", "") or "")[:300]})
             continue
-
+        
+        inference_error_text = None
         parsed, parse_err = parse_ticket_json(raw_text)
+
         schema_errors: List[str] = []
         steps_ok = False
         sev_score = 0.0
@@ -613,8 +619,7 @@ def create_run(req: RunRequest):
             steps_ok = steps_compliance(parsed, rules)
             sev_score = severity_rule_score(input_hint, parsed, gold, rules)
 
-        failure_type = classify_failure(parse_err, schema_errors, steps_ok)
-
+        failure_type = classify_failure(inference_error_text, parse_err, schema_errors, steps_ok)
         rec = {
             "id": sample_id,
             "input_type": input_type,
@@ -623,14 +628,16 @@ def create_run(req: RunRequest):
             "raw_text": raw_text,
             "parsed": parsed,
             "latency_ms": latency_ms,
+
+            # NEW fields
+            "inference_error_text": inference_error_text,
             "parse_error": parse_err,
+
             "schema_errors": schema_errors,
             "steps_ok": steps_ok,
             "severity_score": sev_score,
             "failure_type": failure_type,
         }
-        if failure_type == "inference_error":
-            rec["inference_error"] = classify_inference_error(parse_err)
         records.append(rec)
 
         if failure_type:
@@ -679,6 +686,8 @@ def create_run(req: RunRequest):
             if pe:
                 parse_errs[pe.split(":")[0]] += 1
 
+            examples = []
+
             if r.get("failure_type") == "inference_error":
                 ie = r.get("inference_error", {})
                 ie_type = ie.get("type", "unknown")
@@ -688,6 +697,10 @@ def create_run(req: RunRequest):
                     inference_retryable["retryable"] += 1
                 else:
                     inference_retryable["non_retryable"] += 1
+                
+                txt = (r.get("inference_error_text") or "")[:200]
+                if txt and len(examples) < 3:
+                    examples.append(f"{ie_type}: {txt}")
 
         return {
             "failure_type_counts": dict(failure_counts),
@@ -697,7 +710,8 @@ def create_run(req: RunRequest):
             "top_parse_error_types": parse_errs.most_common(10),
 
             "inference_error_breakdown": inference_errs.most_common(10),
-            "inference_retryability": dict(inference_retryable)
+            "inference_retryability": dict(inference_retryable),
+            "inference_error_examples": examples
         }
     summary = build_eval_summary(records)
     (run_dir / "eval_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
