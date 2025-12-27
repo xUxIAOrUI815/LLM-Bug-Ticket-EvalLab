@@ -385,9 +385,10 @@ def compute_metrics(records: List[Dict[str, Any]]) -> Dict[str, Any]:
     if n == 0:
         return {}
 
-    parse_ok = sum(1 for r in records if r["parse_error"] is None)
-    schema_ok = sum(1 for r in records if r["parse_error"] is None and len(r["schema_errors"]) == 0)
-    steps_ok = sum(1 for r in records if r["parse_error"] is None and r["steps_ok"] is True)
+    # overall
+    parse_ok = sum(1 for r in records if r.get("parse_error") is None)
+    schema_ok = sum(1 for r in records if r.get("parse_error") is None and len(r.get("schema_errors", [])) == 0)
+    steps_ok = sum(1 for r in records if r.get("parse_error") is None and r.get("steps_ok") is True)
 
     latencies = [r["latency_ms"] for r in records if isinstance(r.get("latency_ms"), int)]
     avg_latency = int(sum(latencies) / len(latencies)) if latencies else None
@@ -395,14 +396,49 @@ def compute_metrics(records: List[Dict[str, Any]]) -> Dict[str, Any]:
     sev_scores = [r["severity_score"] for r in records if isinstance(r.get("severity_score"), (int, float))]
     avg_sev_score = round(sum(sev_scores) / len(sev_scores), 4) if sev_scores else None
 
-    return {
+    inference_errors = sum(1 for r in records if (r.get("failure_type") == "inference_error"))
+
+    overall = {
         "num_samples": n,
+        "num_inference_error": inference_errors,
         "json_parse_rate": round(parse_ok / n, 4),
         "schema_complete_rate": round(schema_ok / n, 4),
         "steps_compliance_rate": round(steps_ok / n, 4),
         "avg_severity_rule_score": avg_sev_score,
         "avg_latency_ms": avg_latency,
     }
+
+    # quality-only (exclude inference_error)
+    q = [r for r in records if r.get("failure_type") != "inference_error"]
+    qn = len(q)
+    if qn == 0:
+        quality = {
+            "num_quality_samples": 0,
+            "json_parse_rate": None,
+            "schema_complete_rate": None,
+            "steps_compliance_rate": None,
+            "avg_severity_rule_score": None,
+            "avg_latency_ms": None,
+        }
+    else:
+        q_parse_ok = sum(1 for r in q if r.get("parse_error") is None)
+        q_schema_ok = sum(1 for r in q if r.get("parse_error") is None and len(r.get("schema_errors", [])) == 0)
+        q_steps_ok = sum(1 for r in q if r.get("parse_error") is None and r.get("steps_ok") is True)
+        q_lat = [r["latency_ms"] for r in q if isinstance(r.get("latency_ms"), int)]
+        q_avg_latency = int(sum(q_lat) / len(q_lat)) if q_lat else None
+        q_sev = [r["severity_score"] for r in q if isinstance(r.get("severity_score"), (int, float))]
+        q_avg_sev = round(sum(q_sev) / len(q_sev), 4) if q_sev else None
+
+        quality = {
+            "num_quality_samples": qn,
+            "json_parse_rate": round(q_parse_ok / qn, 4),
+            "schema_complete_rate": round(q_schema_ok / qn, 4),
+            "steps_compliance_rate": round(q_steps_ok / qn, 4),
+            "avg_severity_rule_score": q_avg_sev,
+            "avg_latency_ms": q_avg_latency,
+        }
+
+    return {"overall": overall, "quality_only": quality}
 
 
 def classify_failure(parse_error: Optional[str], schema_errors: List[str], steps_ok: bool) -> Optional[str]:
