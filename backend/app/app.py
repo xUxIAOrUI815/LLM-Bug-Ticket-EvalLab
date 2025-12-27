@@ -450,6 +450,32 @@ def classify_failure(parse_error: Optional[str], schema_errors: List[str], steps
         return "steps_noncompliant"
     return None
 
+def classify_inference_error(parse_err: str) -> Dict[str, Any]:
+    s = (parse_err or "").lower()
+
+    # quota / rate limit
+    if ("429" in s or
+        "resource_exhausted" in s or
+        "quota" in s or
+        "rate limit" in s or
+        "too many requests" in s):
+        return {"type": "quota_exhausted", "code": 429, "retryable": True}
+
+    # permission / auth
+    if "403" in s or "permission_denied" in s:
+        if "leaked" in s:
+            return {"type": "auth_key_leaked", "code": 403, "retryable": False}
+        return {"type": "auth_or_permission", "code": 403, "retryable": False}
+
+    # timeout / network
+    if ("timeout" in s or
+        "timed out" in s or
+        "connection reset" in s):
+        return {"type": "timeout_or_network", "code": None, "retryable": True}
+
+    return {"type": "unknown", "code": None, "retryable": False}
+
+
 def load_default_rules() -> Dict[str, Any]:
     if not DEFAULT_RULES_PATH.exists():
         raise RuntimeError(f"Missing rules file: {DEFAULT_RULES_PATH}")
@@ -596,6 +622,8 @@ def create_run(req: RunRequest):
             "severity_score": sev_score,
             "failure_type": failure_type,
         }
+        if failure_type == "inference_error":
+            rec["inference_error"] = classify_inference_error(parse_err)
         records.append(rec)
 
         if failure_type:
@@ -640,12 +668,10 @@ def create_run(req: RunRequest):
             for se in r.get("schema_errors", []):
                 schema_errs[se] += 1
 
-            # parse_error coarse type (仍然保留，向后兼容)
             pe = r.get("parse_error")
             if pe:
                 parse_errs[pe.split(":")[0]] += 1
 
-            # NEW: structured inference error
             if r.get("failure_type") == "inference_error":
                 ie = r.get("inference_error", {})
                 ie_type = ie.get("type", "unknown")
@@ -663,10 +689,18 @@ def create_run(req: RunRequest):
 
             "top_parse_error_types": parse_errs.most_common(10),
 
-            # NEW: inference-level diagnostics
             "inference_error_breakdown": inference_errs.most_common(10),
             "inference_retryability": dict(inference_retryable)
         }
+    summary = build_eval_summary(records)
+    (run_dir / "eval_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return RunSummary(
+        run_id=run_id,
+        status="completed",
+        config=config,
+        metrics=metrics,
+    )
 
 
 
