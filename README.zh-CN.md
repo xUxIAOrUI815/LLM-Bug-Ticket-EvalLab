@@ -138,7 +138,6 @@ backend/
 ## 🧰 技术栈
 
 * 后端：Python, FastAPI, Pydantic
-* 前端：React, TypeScript, Vite
 * 模型接口：Gemini 多模态 API
 * 存储：JSON / JSONL（文件级 checkpoint）
 
