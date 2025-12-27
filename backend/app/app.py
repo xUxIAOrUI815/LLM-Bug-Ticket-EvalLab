@@ -201,8 +201,8 @@ def gemini_generate(
 ) -> ModelCallResult:
     """
     input_data:
-      - text: the bug description
-      - video: absolute path to video file
+        - text: the bug description
+        - video: absolute path to video file
     """
     t0 = time.time()
 
@@ -441,7 +441,14 @@ def compute_metrics(records: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {"overall": overall, "quality_only": quality}
 
 
-def classify_failure(parse_error: Optional[str], schema_errors: List[str], steps_ok: bool) -> Optional[str]:
+def classify_failure(
+    inference_error_text: Optional[str],
+    parse_error: Optional[str],
+    schema_errors: List[str],
+    steps_ok: bool,
+) -> Optional[str]:
+    if inference_error_text:
+        return "inference_error"
     if parse_error:
         return "parse_error"
     if schema_errors:
@@ -701,11 +708,6 @@ def create_run(req: RunRequest):
         config=config,
         metrics=metrics,
     )
-
-
-
-
-
 
 
 @app.get("/v1/runs/{run_id}", response_model=RunSummary)
